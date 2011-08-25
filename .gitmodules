@@ -1,0 +1,6 @@
+[submodule "vendor/clojurescript"]
+	path = vendor/clojurescript
+	url = https://github.com/clojure/clojurescript.git
+[submodule "vendor/d3"]
+	path = vendor/d3
+	url = https://github.com/mbostock/d3.git
