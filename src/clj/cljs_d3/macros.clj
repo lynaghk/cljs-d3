@@ -1,26 +1,27 @@
 (ns cljs-d3.macros)
 
+
 (defmacro attr
-  "Call JavaScript function, replacing Clojure map with JavaScript object"
-  [d3 attr-map]
-  (let [d3# d3]
-    `(do
-       ~@(for [[k# v#] attr-map]
-           `(.attr ~d3# ~k# ~v#))
-       ~d3#)))
+  "Expand (attr {}) into multiple attr calls"
+  [selection attr-map]
+  `(do
+     ~@(for [[k# v#] attr-map]
+         `(.attr ~selection ~k# ~v#))
+     ~selection))
+
+(defmacro style
+  "Expand (style {}) into multiple style calls"
+  [selection style-map]
+  `(do
+     ~@(for [[k# v#] style-map]
+         `(.style ~selection ~k# ~v#))
+     ~selection))
 
 (defmacro $ready
-  "Call forms on document ready"
+  "Call forms on document ready, if you have jQuery on the page"
   [& forms]
   `(.ready (js/jQuery "document")
            #(do ~@forms)))
-
-(defmacro debug
-  "Call a function to print D3 data and indexes at this point"
-  [d3]
-  `(.call ~d3 (fn [d i]
-                (js/p d)
-                (js/p i))))
 
 (defmacro shim [name]
   "Define a proxy to native D3 method"
