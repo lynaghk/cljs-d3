@@ -88,6 +88,9 @@ to get D3 and the ClojureScript compiler as git submodules, then bootstrap-insta
     cd vendor/clojurescript
     ./script/bootstrap
 
+and add its jars to your classpath.
+This repository includes a `.cake/config` with the appropriate path.
+
 Then you can use the `compile.clj` script to compile ClojureScript examples, which you can view locally:
 
 ```bash

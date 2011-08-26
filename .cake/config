@@ -1,0 +1,1 @@
+project.classpath = src/cljs:src/clj:vendor/clojurescript/src/clj:vendor/clojurescript/src/cljs:vendor/clojurescript/lib/goog.jar:vendor/clojurescript/lib/compiler.jar
