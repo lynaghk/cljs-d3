@@ -98,3 +98,16 @@
   (-> el
       (.parentNode)
       (.appendChild el)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Data-ish helpers
+
+(defn min-max
+  "Returns the vector [min-val max-val] for a data vector.
+   If a :dimension function is passed in, it is mapped over the data before calculating min/max."
+  [data & {:keys [dimension]}]
+  (let [vals (if dimension
+               (map dimension data)
+               data)]
+    [(apply min vals)
+     (apply max vals)]))
