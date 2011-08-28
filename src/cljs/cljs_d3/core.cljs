@@ -87,3 +87,14 @@
   (-> (. sel (transition))
       (.duration duration)
       (.delay delay)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;D3/DOM helpers
+
+(defn make-last-child
+  "Moves an element to the end of its parent, useful for changing SVG z-index"
+  [el]
+  (-> el
+      (.parentNode)
+      (.appendChild el)))
