@@ -110,26 +110,6 @@ Todo
 We are writing façades as we need them, so some D3 functions may be missing.
 If you want something, please send us a note or pull request.
 
-If ClojureScript doesn't get `(:use)` soon, then we might write a macro for chaining D3 calls without namespace prefix; i.e.,
-
-```clojure
-scatterplot (d3-> d3 (select "#example")
-                  (append "svg:svg")
-                  (style {:border "2px solid darkGray"
-                          :border-radius 8})
-```
-
-instead of 
-
-```clojure
-scatterplot (-> d3/d3 (d3/select "#example")
-                (d3/append "svg:svg")
-                (d3/style {:border "2px solid darkGray"
-                           :border-radius 8})
-```
-
-(because we hate typing).
-
 
 Thanks
 ======

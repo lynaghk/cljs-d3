@@ -34,3 +34,11 @@
   (if (seq args)
     `(fn [x# test#] (if test# (. x# ~name ~@args) x#))
     `(fn [x# test#] (if test# (. x# (~name)) x#))))
+
+(defmacro -> [base & forms]
+  "Like ->, except prefixes all forms after the first with 'd3/'.
+   This is a terrible hack to work around the lack of naked :use in ClojureScript"
+  `(-> ~base
+       ~@(for [form forms]
+           (list* (symbol (str "d3/" (first form)))
+                 (rest form)))))
