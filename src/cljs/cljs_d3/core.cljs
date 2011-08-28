@@ -33,7 +33,8 @@
   (.log js/console (cond
                     (sequential? x) (jsArr x)
                     (map? x) (jsObj x)
-                    :else x)))
+                    :else x))
+  x)
 
 
   
@@ -111,3 +112,10 @@
                data)]
     [(apply min vals)
      (apply max vals)]))
+
+(defn avg [data & {:keys [dimension]}]
+  (let [vals (if dimension
+               (map dimension data)
+               data)]
+    (/ (apply + vals)
+     (count vals))))
