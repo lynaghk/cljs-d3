@@ -1,6 +1,7 @@
 (ns sample.main
   (:require [cljs-d3.core :as d3] ;;core must be imported as 'd3' for the cljs-d3 threading macro to work.
-            [cljs-d3.scales :as scales])
+            [cljs-d3.scales :as scales]
+            [cljs-d3.tooltip :as tooltip])
   (:require-macros [cljs-d3.macros :as d3m]))
 
 (defn rand [] ((.random js/Math)))
@@ -32,6 +33,16 @@
                                             "A" "darkRed"
                                             "B" "darkBlue")
                                  :cx #(scale (:x %))
-                                 :cy #(scale (:y %))}))
+                                 :cy #(scale (:y %))}))]
 
-      ])
+
+  ;;Add mouseover tooltip to points
+  (tooltip/init!)
+  (d3/on points "mousemove"
+         #(let [e (d3/event)]
+            (tooltip/show! (.pageX e) (.pageY e)
+                           (str "<div style=\"background-color: white; border: 1px solid black;\">"
+                                                   "Datum: (" (:x %) ", " (:y %) ")"
+                                                   "</div>"))))
+  (d3/on points "mouseout"
+         #(tooltip/hide!)))

@@ -41,6 +41,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;D3 shims
 (def d3 js/d3)
+(def event #(.event js/d3))
+
 (d3m/shim select)
 (d3m/shim selectAll)
 (d3m/shim classed)
