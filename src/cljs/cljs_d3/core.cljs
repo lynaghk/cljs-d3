@@ -13,10 +13,13 @@
   [v] (if (number? v) (str v "px") v))
 
 (defn jsArr
-  "Recursively converts a sequential object into a JavaScript array"
-  [seq]
-  (.array (vec (map #(if (sequential? %) (jsArr %) %)
-                    seq))))
+  ([sequ] "Recursively converts a sequential object into a JavaScript array"
+     (.array (vec (map #(if (sequential? %) (jsArr %) %)
+                       sequ))))
+  ([sequ else] "Returns `else` if seq is nil or empty"
+     (if (seq sequ)
+       (jsArr sequ)
+       else)))
 
 (defn jsObj
   "Convert a clojure map into a JavaScript object"

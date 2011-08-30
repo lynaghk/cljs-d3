@@ -37,12 +37,13 @@
      ([sel# a1# a2#] (. sel# ~name a1# a2#))
      ([sel# a1# a2# a3#] (. sel# ~name a1# a2# a3#))))
 
-(defmacro shim-if [name & args]
-  "Inline proxy for a D3 method, if true.
-   Works for argument-less mutators like `.nice()` as well as things like `.domain([0 1])`"
-  (if (seq args)
-    `(fn [x# test#] (if test# (. x# ~name ~@args) x#))
-    `(fn [x# test#] (if test# (. x# (~name)) x#))))
+(defmacro shim-if [name]
+  "Inline proxy for argument-less D3 method."
+  `(fn [x# test#] (if test# (. x# (~name)) x#)))
+
+(defmacro shim-if-arg [name]
+  "Inline proxy for a D3 method taking a single argument."
+  `(fn [x# arg#] (if arg# (. x# ~name arg#) x#)))
 
 (defmacro -> [base & forms]
   "Like ->, except prefixes all forms after the first with 'd3/'.
