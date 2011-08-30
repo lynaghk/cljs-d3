@@ -115,6 +115,12 @@
     [(apply min vals)
      (apply max vals)]))
 
+(defn min-0-max
+  "Similar to (min-max), but returning [min-val 0 max-val]."
+  [data & {:keys [dimension]}]
+  (let [mm (min-max data :dimension dimension)]
+    [(nth mm 0) 0 (nth mm 1)]))
+
 (defn avg [data & {:keys [dimension]}]
   (let [vals (if dimension
                (map dimension data)
