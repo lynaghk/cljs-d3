@@ -16,14 +16,14 @@ It transparently coerces ClojureScript data types into the appropriate JavaScrip
 ```clojure
 (ns sample.main
   (:require [cljs-d3.core :as d3]
-            [cljs-d3.scales :as scales])
+            [cljs-d3.scale :as scale])
   (:require-macros [cljs-d3.macros :as d3m]))
 
 (defn rand [] ((.random js/Math)))
 
 (let [Width       300 ;;Width in pixels
       n           100 ;;Number of data
-      scale       (scales/linear :domain [0 1] :range [0 Width])
+      scale       (scale/linear :domain [0 1] :range [0 Width])
 
       sample-data (for [_ (range n)]
                     {:x (rand)

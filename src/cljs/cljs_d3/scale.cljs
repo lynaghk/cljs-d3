@@ -1,4 +1,4 @@
-(ns cljs-d3.scales
+(ns cljs-d3.scale
   (:require [cljs-d3.core :as d3])
   (:require-macros [cljs-d3.macros :as d3m]))
 

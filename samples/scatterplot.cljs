@@ -1,6 +1,6 @@
 (ns sample.main
   (:require [cljs-d3.core :as d3] ;;core must be imported as 'd3' for the cljs-d3 threading macro to work.
-            [cljs-d3.scales :as scales]
+            [cljs-d3.scale :as scale]
             [cljs-d3.tooltip :as tooltip])
   (:require-macros [cljs-d3.macros :as d3m]))
 
@@ -8,7 +8,7 @@
 
 (let [Width       300 ;;Width in pixels
       n           100 ;;Number of data
-      scale       (scales/linear :domain [0 1] :range [0 Width])
+      scale       (scale/linear :domain [0 1] :range [0 Width])
 
       sample-data (for [_ (range n)]
                     {:x (rand)
