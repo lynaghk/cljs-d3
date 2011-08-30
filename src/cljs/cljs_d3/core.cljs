@@ -37,7 +37,7 @@
   x)
 
 
-  
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;D3 shims
 (def d3 js/d3)
@@ -120,4 +120,23 @@
                (map dimension data)
                data)]
     (/ (apply + vals)
-     (count vals))))
+       (count vals))))
+
+(defn quantile
+  "Returns the quantiles of a dataset.
+     probs: ntiles of the data to return, defaults to [0 0.25 0.5 0.75 1]
+     dimension: a function to map over the data before calculating quantiles
+  Algorithm transcribed from Jason Davies; https://github.com/jasondavies/science.js/blob/master/src/stats/quantiles.js"
+  [data & {:keys [dimension probs]
+           :or {dimension identity
+                probs [0 0.25 0.5 0.75 1]}}]
+  (let [vals (into [] (sort (map dimension data)))
+        n-1 (dec (count vals))]
+    (map #(let [index (+ 1 (* % n-1))
+                lo    (.floor js/Math index)
+                h     (- index lo)
+                a     (vals (dec lo))]
+            (if (= h 0)
+              a
+              (+ a (* h (- (vals lo) a)))))
+         probs)))
