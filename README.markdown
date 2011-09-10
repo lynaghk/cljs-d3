@@ -111,9 +111,11 @@ Todo
 We are writing façades as we need them, so some D3 functions may be missing.
 If you want something, please send us a note or pull request.
 
+The author (Kevin Lynagh) is giving a talk about this library and ClojureScript/JavaScript integration in general at [Clojure Conj](http://clojure-conj.org) November 10--12, 2011 in Raleigh, NC.
 
 Thanks
 ======
+
 Mike Bostock for D3 and the Clojure core team for their rad work on Clojure(Script).
 
 This project is sponsored by [Keming Labs](http://keminglabs.com), a technical design studio specializing in data visualization.
