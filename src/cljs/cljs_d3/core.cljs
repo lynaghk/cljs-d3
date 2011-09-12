@@ -86,7 +86,7 @@
                             ;;user-specified namespace
                             (re-find #":" node-type) (s/split node-type #":" 2)
                             
-                            ;;inhert parent element namespaceURI
+                            ;;inhert parent element namespaceURI; this only works on simple (append)s, not on, say, (enter) selections.
                             (.node sel) [(ns-abbv (.namespaceURI (. sel (node)))) node-type]
                             
                             ;;no namespace found...
