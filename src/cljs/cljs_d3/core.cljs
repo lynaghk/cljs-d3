@@ -1,4 +1,5 @@
 (ns cljs-d3.core
+  (:require [clojure.string :as s])
   (:require-macros [cljs-d3.macros :as d3m]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -53,7 +54,7 @@
 (d3m/shim text)
 (d3m/shim html)
 
-(d3m/shim append)
+
 (d3m/shim insert)
 (d3m/shim remove)
 
@@ -61,6 +62,45 @@
 
 (d3m/shim enter)
 (d3m/shim exit)
+
+
+
+(defn ns-abbv [namespace-uri]
+  (condp = namespace-uri
+      "http://www.w3.org/2000/svg" :svg
+      "http://www.w3.org/1999/xhtml" :xhtml
+      "http://www.w3.org/1999/xlink" :xlink
+      "http://www.w3.org/XML/1998/namespace" :xml
+      "http://www.w3.org/2000/xmlns/" :xmlns
+      (throw (str "No abbreviation for namespace-uri " namespace-uri))))
+
+(defn append [sel node-type]
+  "Calls D3's append with a few differences:
+   If passed :svg, call .append('svg:svg'), and also add namespace declarations so the resulting element is also valid XML.
+    Automatically make nodes take on the namespace of the first element in the selection (this may be removed if Mike incorporates this feature into D3 itself; see D3 issue #272)."
+  ;;Handle some special cases
+  (condp = node-type
+      :svg (append-svg sel)
+      ;;else
+      (let [[namespace nt] (cond
+                            ;;user-specified namespace
+                            (re-find #":" node-type) (s/split node-type #":" 2)
+                            
+                            ;;inhert parent element namespaceURI
+                            (.node sel) [(ns-abbv (.namespaceURI (. sel (node)))) node-type]
+                            
+                            ;;no namespace found...
+                            true        [nil node-type])]
+        (.append sel (if (nil? namespace)
+                       nt
+                       (str (name namespace) ":" nt))))))
+
+(defn append-svg [sel]
+  ;;See SVG authoring guidelines for more info: https://jwatt.org/svg/authoring/
+  (-> (.append sel "svg:svg")
+      (.attr "xmlns" "http://www.w3.org/2000/svg")
+      (.attr "xmlns:ev" "http://www.w3.org/2001/xml-events")
+      (.attr "xmlns:xlink" "http://www.w3.org/1999/xlink")))
 
 
 
