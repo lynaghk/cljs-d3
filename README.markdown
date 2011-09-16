@@ -55,6 +55,18 @@ It transparently coerces ClojureScript data types into the appropriate JavaScrip
 
 For more details and examples, see [http://keminglabs.com/cljs-d3/](http://keminglabs.com/cljs-d3/).
 
+
+EVERYTHING IS ALPHA
+===================
+
+This project is very much an experiment, and things will shuffle around a lot while we figure out how to dress up D3/JavaScript with Clojure-like syntax and semantics.
+The low-level bindings to D3 are relatively stable (the `->` threading macro, `(attr)` and `(style)` map literal expansion and anonymous functions), but we're having trouble with many of D3's statistical helper functions like `d3.layout.histogram()`.
+These require lots of type-coercions between Clojure's map and sequences and JavaScript's Object, and it's not immediately clear where to put them; sometimes you want to give the histogram to D3 (which requires JS types) and sometimes you want to handle it from ClojureScript.
+
+
+
+
+
 Install
 =======
 
