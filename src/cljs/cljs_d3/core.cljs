@@ -53,6 +53,7 @@
 (d3m/shim property)
 (d3m/shim text)
 (d3m/shim html)
+(d3m/shim node)
 
 
 (d3m/shim insert)
