@@ -74,7 +74,7 @@
       "http://www.w3.org/2000/xmlns/" :xmlns
       (throw (str "No abbreviation for namespace-uri " namespace-uri))))
 
-(defn append [sel node-type]
+(defn append [sel node-type attr-map]
   "Calls D3's append with a few differences:
    If passed :svg, call .append('svg:svg'), and also add namespace declarations so the resulting element is also valid XML.
     Automatically make nodes take on the namespace of the first element in the selection (this may be removed if Mike incorporates this feature into D3 itself; see D3 issue #272)."
@@ -90,10 +90,12 @@
                             (.node sel) [(ns-abbv (.namespaceURI (. sel (node)))) node-type]
                             
                             ;;no namespace found...
-                            true        [nil node-type])]
-        (.append sel (if (nil? namespace)
-                       nt
-                       (str (name namespace) ":" nt))))))
+                            true        [nil node-type])
+            sel (.append sel (if (nil? namespace)
+                               nt
+                               (str (name namespace) ":" nt)))]
+
+        (attr sel (or attr-map {})))))
 
 (defn append-svg [sel]
   ;;See SVG authoring guidelines for more info: https://jwatt.org/svg/authoring/
