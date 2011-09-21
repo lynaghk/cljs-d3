@@ -80,23 +80,25 @@
    If passed :svg, call .append('svg:svg'), and also add namespace declarations so the resulting element is also valid XML.
     Automatically make nodes take on the namespace of the first element in the selection (this may be removed if Mike incorporates this feature into D3 itself; see D3 issue #272)."
   ;;Handle some special cases
-  (condp = node-type
-      :svg (append-svg sel)
-      ;;else
-      (let [[namespace nt] (cond
-                            ;;user-specified namespace
-                            (re-find #":" node-type) (s/split node-type #":" 2)
-                            
-                            ;;inhert parent element namespaceURI; this only works on simple (append)s, not on, say, (enter) selections.
-                            (.node sel) [(ns-abbv (.namespaceURI (. sel (node)))) node-type]
-                            
-                            ;;no namespace found...
-                            true        [nil node-type])
-            sel (.append sel (if (nil? namespace)
-                               nt
-                               (str (name namespace) ":" nt)))]
+  (let [new-el (condp = node-type
+                   :svg (append-svg sel)
+                   ;;else
+                   (let [[namespace nt] (cond
+                                         ;;user-specified namespace
+                                         (re-find #":" node-type) (s/split node-type #":" 2)
 
-        (attr sel (or attr-map {})))))
+                                         ;;inhert parent element namespaceURI; this only works on simple (append)s, not on, say, (enter) selections.
+                                         (.node sel) [(ns-abbv (.namespaceURI (. sel (node)))) node-type]
+
+                                         ;;no namespace found...
+                                         true        [nil node-type])]
+                     (.append sel (if (nil? namespace)
+                                    nt
+                                    (str (name namespace) ":" nt)))
+
+                     ))]
+    ;;Apply attr-map, if it was given
+    (attr new-el (or attr-map {}))))
 
 (defn append-svg [sel]
   ;;See SVG authoring guidelines for more info: https://jwatt.org/svg/authoring/
