@@ -55,6 +55,7 @@
 (d3m/shim html)
 (d3m/shim node)
 
+(d3m/shim call)
 
 (d3m/shim insert)
 (d3m/shim remove)
