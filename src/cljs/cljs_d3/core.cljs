@@ -80,31 +80,38 @@
   "Calls D3's append with a few differences:
    If passed :svg, call .append('svg:svg'), and also add namespace declarations so the resulting element is also valid XML.
     Automatically make nodes take on the namespace of the first element in the selection (this may be removed if Mike incorporates this feature into D3 itself; see D3 issue #272)."
-  ;;Handle some special cases
-  (let [new-el (condp = node-type
-                   :svg (append-svg sel)
-                   ;;else
-                   (let [[namespace nt] (cond
-                                         ;;user-specified namespace
-                                         (re-find #":" node-type) (s/split node-type #":" 2)
+  (let [new-el (cond ;;Handle some special cases
+                (= :svg node-type) (append-svg sel)
+                (.nodeName node-type) (append-node sel node-type)
+                ;;else
+                true (let [[namespace nt] (cond
+                                      ;;user-specified namespace
+                                      (re-find #":" node-type) (s/split node-type #":" 2)
 
-                                         ;;inhert parent element namespaceURI; this only works on simple (append)s, not on, say, (enter) selections.
-                                         (.node sel) [(ns-abbv (.namespaceURI (. sel (node)))) node-type]
+                                      ;;inhert parent element namespaceURI; this only works on simple (append)s, not on, say, (enter) selections.
+                                      (.node sel) [(ns-abbv (.namespaceURI (. sel (node)))) node-type]
 
-                                         ;;no namespace found...
-                                         true        [nil node-type])]
-                     (.append sel (if (nil? namespace)
-                                    nt
-                                    (str (name namespace) ":" nt)))
+                                      ;;no namespace found...
+                                      true        [nil node-type])]
+                  (.append sel (if (nil? namespace)
+                                 nt
+                                 (str (name namespace) ":" nt)))
 
-                     ))]
+                  ))]
     ;;Apply attr-map, if it was given
     (attr new-el (or attr-map {}))))
+
+
+
 
 (defn append* [sel node-type attr-map]
   "Calls (append), but returns the original selection instead of the appended selection."
   (append sel node-type attr-map)
   sel)
+
+(defn append-node [sel child]
+  (.appendChild (node sel) child)
+  (select d3 child))
 
 (defn append-svg [sel]
   ;;See SVG authoring guidelines for more info: https://jwatt.org/svg/authoring/
