@@ -101,6 +101,11 @@
     ;;Apply attr-map, if it was given
     (attr new-el (or attr-map {}))))
 
+(defn append* [sel node-type attr-map]
+  "Calls (append), but returns the original selection instead of the appended selection."
+  (append sel node-type attr-map)
+  sel)
+
 (defn append-svg [sel]
   ;;See SVG authoring guidelines for more info: https://jwatt.org/svg/authoring/
   (-> (.append sel "svg:svg")
