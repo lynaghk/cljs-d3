@@ -22,6 +22,8 @@
        (jsArr sequ)
        else)))
 
+(defn jsArr? [x] (not (nil? (.length x))))
+
 (defn jsObj
   "Convert a clojure map into a JavaScript object"
   [obj]
@@ -141,7 +143,8 @@
   ([sel k v] (.style sel (kstr k) (pxstr v))))
 
 (defn data [sel x]
-  (.data sel (if (sequential? x)
+  (.data sel (if (or (sequential? x)
+                     (jsArr? x))
                (jsArr x)
                #(jsArr (apply x %&)))))
 
