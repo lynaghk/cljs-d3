@@ -143,10 +143,9 @@
   ([sel k v] (.style sel (kstr k) (pxstr v))))
 
 (defn data [sel x]
-  (.data sel (if (or (sequential? x)
-                     (jsArr? x))
-               (jsArr x)
-               #(jsArr (apply x %&)))))
+  (.data sel (if (fn? x)
+               #(jsArr (apply x %&))
+               (jsArr x))))
 
 
 (defn transition [sel & {:keys [duration delay]
