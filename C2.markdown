@@ -1,0 +1,171 @@
+DRAFT: C2 will get its own git repository in late October.
+==========================================================
+
+I'm just sketching out ideas for a D3-inspired Clojure data visualization library.
+If you've got ideas about how this kind of thing should look, definitely shoot me an email (or, if you're in Portland, OR, lets get a beer).
+
+--Kevin
+  September 2011
+
+C2
+==
+
+C2 is a declarative data visualization library that generates static SVG.
+It's like D3, but written in Clojure and less fancy!
+
+
+Design Goals
+------------
+
+The two eminent goals of C2 are composability and simplicity of expression.
+
+Composability is achieved in the traditional functional-programming way: breaking things up into small pieces.
+In the case of C2, the fundamental visual pieces are SVG `<g>` elements, and the fundamental statistical pieces are closures.
+The `<g>` elements depict things like axes, parts of legends, sets of marks, &c.
+
+// (pictures please!)
+
+and the closures are different scales and statistical transforms that aggregate (e.g., histograms) or smooth / regress (e.g., best-fit models).
+
+To make a C2 visualization, you explicitly apply transforms to your data, build fundamental visual elements, and then lay out these elements.
+
+C2 provides a constraint-based layout system to place graphics according to both essential (i.e., data-driven) and incidental (e.g., margin + max-label-width) considerations.
+
+// See: [Cocoa autolayout](http://developer.apple.com/library/mac/#releasenotes/UserExperience/RNAutomaticLayout/_index.html)
+// How hard would it be to implement something like CSS flexbox to do things like justify the bars on a bar chart?
+
+Using declarative constraints between graphics rather than absolutely positioning low-level DOM elements prevents incidental layout concerns from tainting the essential visualization mappings, making graphics more reusable.
+
+
+
+
+
+
+
+
+
+
+The simplicity of expression comes from Clojure; the C2 API embraces Clojure idioms like destructuring and laziness, and makes generous use of multi-arity functions.
+This gives C2 a concise, jQuery-like flavor compared to D3.
+Occasionally, C2 sacrifices absolute transparency for user-simplicity to sweep SVG DOM awkwardness under the rug and embrace best practices.
+For instance, while you can still say
+
+```clojure
+(append "svg:svg") ;;=> <svg></svg>
+```
+
+you almost always want
+
+```clojure
+(append :svg) ;;=> <svg xmlns="http://www.w3.org/2000/svg"
+              ;;        xmlns:ev="http://www.w3.org/2001/xml-events"
+              ;;        xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+```
+(see [SVG authoring guidelines](https://jwatt.org/svg/authoring/))
+
+Unlike D3, C2 does not support nested looping via multiple calls to `.data()`.
+Rather, C2's `(data)` function can only be called once for a given selection; multiple elements can be constructed by explict use of Clojure's looping constructs like `(doseq)`.
+
+//Since it doesn't support binding, should C2 have a (data) function at all?
+//Why not just:
+
+```clojure
+(doseq [d the-data]
+  (append svg (dotplot d, :scale s))
+  (append svg (label-for-datum d, :scale s)))
+```
+
+//...because one level of implicit looping would be more concise?
+
+```clojure
+(-> svg
+    (data the-data)
+    (append* #(dotplot %, :scale s))
+    (append* #(label-for-datum %, :scale s)))
+```
+
+
+
+
+Motivations
+-----------
+
+In D3 one tends to mix essential visualization data aesthetics with incidental layout code.
+To make a bar chart you might write something like
+
+```javascript
+d3.select("#my-svg")
+.selectAll(".bar")
+.data([9, 2, 4, 11, 19, 13])
+.enter().append("svg:rect")
+.attr("class", "bar")
+.attr("height", function(x, i){return x;}) //essential mapping
+.attr("x", function(x, i){return i*bar_spacing;}); //incidental mapping
+```
+
+In C2, you would write something like
+
+```clojure
+(-> 
+)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+C2 rejects a custom scenegraph abstraction in favor of directly manipulating an existing standard (SVG).
+The rational is the same as D3's; while custom abstractions may be more efficient for specifying certain visualizations---a bar chart or a line chart---they ultimately limit expressiveness.
+See section one of the [D3 paper](http://vis.stanford.edu/files/2011-D3-InfoVis.pdf) (PDF link).
+
+
+Differences from D3
+-------------------
+
+D3 is a language for constructing bespoke visualizations on web, not generating plots (sayith Bostock: "D3 is not a charting library!").
+While many people use D3 to create charts, 
+
+
+C2 is focused only on the construction of static statistical graphics; it does not support transitions or animations.
+This is because
+
+1) It's easier to implement a static system.
+2) Good information design is good graphic design: we want output suitable for print, as well as the web.
+3) Interactivity in information software is very hard to do well anyway. We agree with Bret Victor's take in [Magic Ink](http://worrydream.com/MagicInk/#interactivity_considered_harmful).
+
+
+
+
+
+Theoretical Foundations
+-----------------------
+(would be nice to integrate...)
+
+Hadly Wickham's [thesis](http://had.co.nz/thesis/)
+
+Hadley Wickam's layered grammar (used by the R ggplot2 package): A dataset and set of mappings from variables to aesthetics.
+One or more layers, each consisting of geometric objects, statistical transformations, position adjustments, datasets & aesthetic mappings.
+    
+Leland Wilkinson's [Grammar of Graphics](http://www.cs.uic.edu/~wilkinson/TheGrammarOfGraphics/GOG.html)
+
+
+
+
+
+
+
+References
+----------
+
+http://blog.vivekhaldar.com/
+Interface differences: operation vs. expression
+
+
