@@ -61,28 +61,42 @@ you almost always want
               ;;        xmlns:ev="http://www.w3.org/2001/xml-events"
               ;;        xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
 ```
+
 (see [SVG authoring guidelines](https://jwatt.org/svg/authoring/))
 
+Append also accepts a map of attributes, which is macro-expanded into a scope with a map-datum's values as locals.
+That is, you can write
+
+```clojure
+(-> g-element
+    (data [{:x 1 :y 2}, {:x 4 :y 0}])
+    (append :circle {:cx x :cy y}))
+```
+
+which is equivalent to D3
+
+```javascript
+g_element.data([{x: 1, y: 2}, {x: 4 y: 0}])
+  .enter()
+  .append("svg:circle")
+  .attr("cx", function(d){return d.x;})
+  .attr("cy", function(d){return d.y;})
+```
+
+//How are we going to expand attribute-setter-maps when the data is just a scalar collection?
+//Is that magical scope going to be confusing for users? Maybe when they're doing subsets and binding vars in a (doseq)...
+
+
 Unlike D3, C2 does not support nested looping via multiple calls to `.data()`.
-Rather, C2's `(data)` function can only be called once for a given selection; multiple elements can be constructed by explict use of Clojure's looping constructs like `(doseq)`.
-
-//Since it doesn't support binding, should C2 have a (data) function at all?
-//Why not just:
+Rather, C2's `(data)` function can only be called once for a given selection; nested elements can be constructed by explict use of Clojure's looping constructs like `(doseq)`:
 
 ```clojure
-(doseq [d the-data]
-  (append svg (dotplot d, :scale s))
-  (append svg (label-for-datum d, :scale s)))
+(doseq [[something-val, subset] (group-by :something the-data)]
+  (append svg (dotplot subset, :scale s))
+  (append svg (label something-val)))
 ```
 
-//...because one level of implicit looping would be more concise?
 
-```clojure
-(-> svg
-    (data the-data)
-    (append* #(dotplot %, :scale s))
-    (append* #(label-for-datum %, :scale s)))
-```
 
 
 
@@ -113,8 +127,79 @@ In C2, you would write something like
 
 
 
+Samples
+-------
 
 
+```clojure
+;; A graphical timecard like
+;; http://raphaeljs.com/github/dots.html
+
+;;Factor it into the two guides and dataframe.
+
+(let [hourcard-data [{:day-of-week 0 :hour 0 :val 0}
+                     {:day-of-week 0 :hour 1 :val 1.3}
+                     {:day-of-week 6 :hour 13 :val 2.1}
+                     {:day-of-week 3 :hour 11 :val 2}]
+      svg (append "#timecard-chart" :svg)
+
+      ;;Make the dataframe
+      df-g (append svg :g {:id "timecard-df"})
+      ;;The day-of-week guide on the left
+      dow-guide (append svg :g {:id "dow-guide" :class "guide"})
+      ;;The hour guide on the right
+      hour-guide (append svg :g {:id "hour-guide" :class "guide"})
+
+      width 800, height 300, max-radius 10
+
+      ;;Make the two positional scales; min-max returns [min, max]
+      scale-hour (scale/linear :domain (min-max timecard-data :dimension :hour)
+                               :range [0 width])
+      scale-dow (scale/linear :domain (min-max timecard-data :dimension :day-of-week)
+                              :range [0 height])
+      ;;The radius scale has the same domain as the hour scale, so derive it.
+      scale-radius (range scale-hour [0 max-radius])
+      scale-colour (scale/linear :domain (min-max timecard-data :dimension :val)
+                                 ;;The Raphael example uses green->red, which is a terrible color scale for the colourblind.
+                                 :range ["white" "blue"])]
+  ;;Fill the dataframe
+  (-> df-g
+      (data ds) (append :circle {:class "hour-circle"
+                                 :fill  (scale-colour val)
+                                 :cx    (scale-hour hour)
+                                 :cy    (scale-dow day-of-week)
+                                 :r     (scale-radius val)}))
+
+  ;;Append the day-of-week guide
+  (-> dow-guide
+      (append (guide scale-dow
+                     :direction :vertical
+                     ;;A function that accepts tick values in the domain.
+                     ;;In this case, we're using vectors as functions; (["A", "B"] 1) ;;=> "B".
+                     :text ["Mon" "Tue" "Wed" "Thur" "Fri" "Sat" "Sun"]
+                     :tick nil))) ;;no tickmarks please
+                     
+
+  ;;And the hour guide
+  (-> hour-guide
+      (append (guide scale-hour
+                     :direction :horizontal
+                     :text #(condp = %
+                                     0  "12am"
+                                     12 "12pm"
+                                     (mod % 12))
+                     :tick nil)))) ;;no tickmarks please
+
+```
+
+
+
+
+
+
+Open questions
+--------------
+Should we abstract dealing with labels that are different than attribute values; `{:dow 0}` => "Sunday".
 
 
 
