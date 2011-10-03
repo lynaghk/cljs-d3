@@ -1,6 +1,7 @@
 (ns sample.scatterplot
   (:require [cljs-d3.scale :as scale]
-            [cljs-d3.tooltip :as tooltip])
+            [cljs-d3.tooltip :as tooltip]
+            [jsd3.core :as jsd3])
   (:use [cljs-d3.core :only [d3 select selectAll append style attr data enter
                              on event]]))
 
