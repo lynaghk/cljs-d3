@@ -1,5 +1,6 @@
 (ns cljs-d3.core
-  (:require [clojure.string :as s])
+  (:require [clojure.string :as s]
+            [jsd3.core :as jsd3])
   (:require-macros [cljs-d3.macros :as d3m]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

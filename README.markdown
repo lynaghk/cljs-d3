@@ -14,10 +14,11 @@ It transparently coerces ClojureScript data types into the appropriate JavaScrip
 
 
 ```clojure
-(ns sample.main
-  (:require [cljs-d3.core :as d3]
-            [cljs-d3.scale :as scale])
-  (:require-macros [cljs-d3.macros :as d3m]))
+(ns sample.scatterplot
+  (:require [cljs-d3.scale :as scale]
+            [cljs-d3.tooltip :as tooltip])
+  (:use [cljs-d3.core :only [d3 select selectAll append style attr data enter
+                             on event]]))
 
 (defn rand [] ((.random js/Math)))
 
@@ -31,14 +32,14 @@ It transparently coerces ClojureScript data types into the appropriate JavaScrip
                      :class (if (> (rand) 0.5)
                               "A" "B")})
 
-      scatterplot (d3m/-> d3/d3 (select "#example")
+      scatterplot (-> d3 (select "#example")
                           (append "svg:svg")
                           (style {:border "2px solid darkGray"
                                   :border-radius 8})
                           (attr {:width  Width
                                  :height Width}))
 
-      points      (d3m/-> scatterplot
+      points      (-> scatterplot
                           (selectAll "circle.num")
                           (data sample-data)
                           (enter)(append "svg:circle")
@@ -48,9 +49,8 @@ It transparently coerces ClojureScript data types into the appropriate JavaScrip
                                             "A" "darkRed"
                                             "B" "darkBlue")
                                  :cx #(scale (:x %))
-                                 :cy #(scale (:y %))}))
+                                 :cy #(scale (:y %))}))]
 
-      ])
 ```
 
 For more details and examples, see [http://keminglabs.com/cljs-d3/](http://keminglabs.com/cljs-d3/).
