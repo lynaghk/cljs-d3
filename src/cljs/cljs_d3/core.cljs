@@ -120,8 +120,8 @@
   ;;See SVG authoring guidelines for more info: https://jwatt.org/svg/authoring/
   (-> (.append sel "svg:svg")
       (.attr "xmlns" "http://www.w3.org/2000/svg")
-      (.attr "xmlns:ev" "http://www.w3.org/2001/xml-events")
-      (.attr "xmlns:xlink" "http://www.w3.org/1999/xlink")))
+      (.attr "xmlns:xmlns:ev" "http://www.w3.org/2001/xml-events")
+      (.attr "xmlns:xmlns:xlink" "http://www.w3.org/1999/xlink")))
 
 
 
