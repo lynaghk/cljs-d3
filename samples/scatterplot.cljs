@@ -5,8 +5,6 @@
   (:use [cljs-d3.core :only [d3 select selectAll append style attr data enter
                              on event]]))
 
-(defn rand [] ((.random js/Math)))
-
 (let [Width       300 ;;Width in pixels
       n           100 ;;Number of data
       scale       (scale/linear :domain [0 1] :range [0 Width])
