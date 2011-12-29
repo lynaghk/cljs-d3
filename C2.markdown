@@ -1,5 +1,5 @@
-DRAFT: C2 will get its own git repository in late October.
-==========================================================
+DRAFT: C2 will get its own git repository in March 2012
+========================================================
 
 I'm just sketching out ideas for a D3-inspired Clojure data visualization library.
 If you've got ideas about how this kind of thing should look, definitely shoot me an email (or, if you're in Portland, OR, lets get a beer).
@@ -31,11 +31,7 @@ To make a C2 visualization, you explicitly apply transforms to your data, build 
 
 C2 provides a constraint-based layout system to place graphics according to both essential (i.e., data-driven) and incidental (e.g., margin + max-label-width) considerations.
 
-// See: [Cocoa autolayout](http://developer.apple.com/library/mac/#releasenotes/UserExperience/RNAutomaticLayout/_index.html)
-// How hard would it be to implement something like CSS flexbox to do things like justify the bars on a bar chart?
-
 Using declarative constraints between graphics rather than absolutely positioning low-level DOM elements prevents incidental layout concerns from tainting the essential visualization mappings, making graphics more reusable.
-
 
 
 
@@ -199,7 +195,20 @@ Samples
 
 Open questions
 --------------
-Should we abstract dealing with labels that are different than attribute values; `{:dow 0}` => "Sunday".
+Should we abstract dealing with labels that are different than attribute values; `{:dow 0}` => "Sunday"?
+
+How can we bind individual data to a hierarchy of DOM elements re-usably?
+(This might only be an issue when adding animation or update/binding support.)
+For instance, if we want a datum in a graph visualization to be represented by
+
+    <g class="node">
+      <circle cx=d.x cy=d.y></circle>
+      <text class="label">d.name</text>
+    </g>
+
+
+
+
 
 
 
