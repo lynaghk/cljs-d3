@@ -9,6 +9,12 @@
      http://keminglabs.com/cljs-d3/
 
 
+Depreciated
+===========
+
+This library has been depreciated in favor of [C2](http://keminglabs.com/c2), a pure-Clojure data visualization library for the server and the browser.
+
+
 Cljs-d3 is a ClojureScript façade for the [D3](http://mbostock.github.com/d3/) JavaScript DOM-manipulation library.
 It transparently coerces ClojureScript data types into the appropriate JavaScript objects and provides a more Clojure-like API to some of the D3 functions:
 
